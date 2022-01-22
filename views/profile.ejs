@@ -1,0 +1,56 @@
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://kit.fontawesome.com/5bc761fa82.js" crossorigin="anonymous"></script>
+	<title>Blog App | Profile</title>
+</head>
+<body>
+	<nav class="navbar navbar-inverse bg-dark p-3">
+		<div class="container-fluid">
+		  <div class="navbar-header">
+			<a class="navbar-brand" href="/home">Blog App</a>
+		  </div>
+		  <ul class="nav navbar-nav navbar-right flex-row">
+			<li>
+				<a href="/home">
+					<i class="fas fa-home" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li class="mx-5">
+				<a href="/profile/<%= sessionUser.id %>">
+					<i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li>
+				<a href="/logout">
+					<i class="fas fa-sign-out-alt" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+		  </ul>
+		</div>
+	  </nav>
+	  <div class="container mt-4">
+		  <div class="d-flex flex-row justify-content-between">
+			<div>
+				<h1>PROFILE</h1>
+				<div><%= user.name %></div>
+			</div>
+			<div>
+				<a href="/all-articles/<%= user.id %>" class="btn btn-success">All articles</a>
+				<p class="d-inline mx-5 my-auto">Followers: <a href="#">0</a></p>
+				<p class="d-inline my-auto">Following: <a href="#">0</a></p>
+			</div>
+			<div></div>
+		  </div>
+	  </div>
+</body>
+</html>

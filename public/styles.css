@@ -1,0 +1,76 @@
+body {
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-left {
+    background-image: url(images/login-image.jpg);
+    background-size: cover;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+.overlay {
+    background: rgba(34, 27, 20, 0.44);
+    min-height: 100%;
+}
+
+.content {
+    background-color: #282A39;
+}
+
+#login-btn, #register-btn {
+    background-color: #00DDAF;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.eye-btn:hover {
+    color: #157BFF;
+    cursor: pointer;
+}
+
+.pass-btn:hover, .cnfm-btn:hover {
+    color: #157BFF;
+    cursor: pointer;
+}
+
+.member-login {
+    margin-top: 4.1rem;
+}
+
+.copy-right-login {
+    margin-top: 9rem;
+}
+
+.popup-effect {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(152, 152, 152, 0.7);
+}
+
+.popup {
+    background: #eaeaeabf;
+    border-radius: 4px;
+    max-width: 30rem;
+    position: relative;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+.popup .close {
+	position: absolute;
+	top: 5px;
+	right: 15px;
+	transition: all 200ms;
+	font-size: 30px;
+	font-weight: bold;
+	text-decoration: none;
+}
+.popup .close:hover {
+	color: #686de0;
+}
+

@@ -1,0 +1,71 @@
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://kit.fontawesome.com/5bc761fa82.js" crossorigin="anonymous"></script>
+	<title>Blog App | Home</title>
+</head>
+<body>
+	<nav class="navbar navbar-inverse bg-dark p-3">
+		<div class="container-fluid">
+		  <div class="navbar-header">
+			<a class="navbar-brand" href="/home">Blog App</a>
+		  </div>
+		  <ul class="nav navbar-nav navbar-right flex-row">
+			<li>
+				<a href="/home">
+					<i class="fas fa-home" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li class="mx-5">
+				<a href="/profile/<%= user.id %>">
+					<i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li>
+				<a href="/logout">
+					<i class="fas fa-sign-out-alt" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+		  </ul>
+		</div>
+	  </nav>
+	  <div class="container mt-4">
+		<h1 class="text-center">HOME</h1>
+		<a href="/home/new-article" class="btn btn-success">New article</a>
+		<div class="card-deck">
+			<% users.forEach(user => { %>
+				<% let allArticles = user.articles %>
+				<% let count = allArticles.length %>
+				<% if (count !== 0){ %>
+					<div class="card mt-4">
+						<div class="card-body">
+							<h4 class="card-title">
+								<%= allArticles[count-1].title %>
+							</h4>
+							<div class="card-subtitle text-muted mb-2">
+								Created on: <%= allArticles[count-1].createdOn.toLocaleDateString() %>
+							</div>
+							<div class="card-subtitle text-muted mb-2">
+								Created by: <a href="/profile/<%= user.id %>"><%= user.email %></a>
+							</div>
+							<div class="card-text mb-2">
+								<%= allArticles[count-1].description %>
+							</div>
+							<a href="/show-article/<%= allArticles[count-1].id %>/<%= user.id %>" class="btn btn-primary">Read More</a>
+						</div>
+					</div>
+				<% } %>
+			<% }) %>
+		</div>
+	  </div>
+</body>
+</html>

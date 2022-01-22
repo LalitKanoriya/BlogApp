@@ -1,0 +1,70 @@
+
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://kit.fontawesome.com/5bc761fa82.js" crossorigin="anonymous"></script>
+	<title>Blog App | All articles</title>
+</head>
+<body>
+	<nav class="navbar navbar-inverse bg-dark p-3">
+		<div class="container-fluid">
+		  <div class="navbar-header">
+			<a class="navbar-brand" href="/home">Blog App</a>
+		  </div>
+		  <ul class="nav navbar-nav navbar-right flex-row">
+			<li>
+				<a href="/home">
+					<i class="fas fa-home" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li class="mx-5">
+				<a href="/profile/<%= sessionUser.id %>">
+					<i class="fas fa-user-circle" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+			<li>
+				<a href="/logout">
+					<i class="fas fa-sign-out-alt" style="font-size: 2rem;"></i>
+				</a>
+			</li>
+		  </ul>
+		</div>
+	  </nav>
+	<div class="container mt-4">
+		<h1 class="text-center">All articles</h1>
+		<div class="card-deck">
+			<% articles.forEach(article => { %>
+				<div class="card mt-4">
+					<div class="card-body">
+						<h4 class="card-title"><%= article.title %></h4>
+						<div class="card-subtitle text-muted mb-2">
+							Created on: <%= article.createdOn.toLocaleDateString() %>
+						</div>
+						<div class="card-text mb-2"><%= article.description %></div>
+						<a href="/show-article/<%= article._id %>" class="btn btn-primary">Read More</a>
+						<% if (user.id === sessionUser.id) { %>
+							<a href="/edit-article/<%= article._id %>" class="btn btn-success">
+								<i class="far fa-edit"></i>
+							</a>
+							<form action="/<%= article._id %>?_method=DELETE" method="POST" class="d-inline">
+								<button type="submit" class="btn btn-danger">
+									<i class="far fa-trash-alt"></i>
+								</button>
+							</form>
+						<% } %>
+					</div>
+				</div>
+			<% }) %>
+		</div>
+	</div>
+	  
+</body>
+</html>
