@@ -4,13 +4,28 @@ const User = require('../models/users');
 const Article = require('../models/articles');
 const { db } = require('../models/users');
 
-router.get("/home", (req, res) => {
+router.get("/home", async (req, res) => {
     let id = req.session.userId;
-    User.findOne({ _id : id}, (err, user) => {
-        if (user){
+    User.findOne({ _id : id}, (err, sessionUser) => {
+        if (sessionUser){
             User.find((err, users) => {
                 if (users){
-                    res.render('home', {users : users, user: user});
+                    let articles = []
+                    users.forEach((user, index) => {
+                        let allArticles = user.articles;
+                        let length = allArticles.length;
+                        let articleId = allArticles[length-1];
+                        Article.findOne({_id: articleId}, (err, article)=>{
+                            if (article){
+                                articles.push(article);
+                                if (index + 1 === users.length){
+                                    res.render('home', { user: sessionUser, articles: articles });
+                                }
+                            } else{
+                                res.render('home', { user: sessionUser, articles: articles });
+                            }
+                        })
+                    })
                 } else{
                     res.send(err);
                 }
@@ -25,7 +40,12 @@ router.get('/home/new-article', (req, res) => {
     let id = req.session.userId;
     User.findOne({_id: id}, (err, user) => {
         if (user){
-            res.render('newArticle', {article : new Article(), link : "/home", user: user});
+            res.render('newArticle',
+            {
+                article : new Article(),
+                link : "/home",
+                user: user
+            });
         } else{
             res.send(err);
         }
@@ -36,7 +56,8 @@ router.post('/home/new-article', (req, res) => {
     let newArticle = new Article({
         title : req.body.title,
         description : req.body.description,
-        markdown : req.body.markdown
+        markdown : req.body.markdown,
+        createdBy : req.session.userId
     })
     newArticle.save((err, article) => {
         if (err){
@@ -45,7 +66,7 @@ router.post('/home/new-article', (req, res) => {
             let id = req.session.userId;
             User.updateOne(
                 { _id : id},
-                { $push : {articles : article}}, () => {
+                { $push : {articles : article._id}}, () => {
                     res.redirect(`/show-article/${article.id}`);
                 }
             );
@@ -60,7 +81,11 @@ router.get('/show-article/:id', (req, res) => {
         if (article){
             User.findOne({_id: sessionId}, (err, sessionUser) => {
                 if (sessionUser){
-                    res.render('showArticle', { article : article, sessionUser: sessionUser});
+                    res.render('showArticle',
+                    { 
+                        article : article,
+                        sessionUser: sessionUser
+                    });
                 } else{
                     res.send(err);
                 }
@@ -78,7 +103,11 @@ router.get('/profile/:id', (req, res) => {
         if (sessionUser){
             User.findOne({_id: userId}, (err, user) => {
                 if (user){
-                    res.render('profile', {user : user, sessionUser: sessionUser});
+                    res.render('profile',
+                    {
+                        user : user,
+                        sessionUser: sessionUser
+                    });
                 } else{
                     res.send(err);
                 }
@@ -96,7 +125,37 @@ router.get('/all-articles/:id', (req, res) => {
         if (sessionUser){
             User.findOne({_id: userId}, (err, user) => {
                 if (user){
-                    res.render('allArticles', {articles: user.articles, sessionUser: sessionUser, user: user});
+                    let articlesId = user.articles;
+                    console.log(articlesId);
+                    let userArticles = [];
+                    if (articlesId.length !== 0){
+                        articlesId.forEach((id, index)=>{
+                            Article.findOne({_id: id}, (err, article)=>{
+                                if (article){
+                                    userArticles.push(article);
+                                    if (index + 1 === articlesId.length){
+                                        console.log('Article founded in both schemas');
+                                        res.render('allArticles', 
+                                        {
+                                            articles: userArticles,
+                                            sessionUser: sessionUser,
+                                            user: user
+                                        });
+                                    }
+                                } else{
+                                    console.log('Article founded in userSchema but not in articleSchema!');
+                                }
+                            })
+                        })
+                    } else{
+                        console.log('Article not found in both schemas!');
+                        res.render('allArticles', 
+                        {
+                            articles: userArticles,
+                            sessionUser: sessionUser,
+                            user: user
+                        });
+                    }
                 } else{
                     res.send(err);
                 }
@@ -114,7 +173,12 @@ router.get('/edit-article/:id', (req, res) => {
         if (sessionUser){
             Article.findById({_id : id}, (err, article) => {
                 if (article){
-                    res.render('editArticle', {article: article, link: `/all-articles/${sessionId}`, user: sessionUser});
+                    res.render('editArticle',
+                    {
+                        article: article,
+                        link: `/all-articles/${sessionId}`,
+                        user: sessionUser
+                    });
                 } else{
                     res.send(err);
                 }
@@ -162,25 +226,20 @@ router.put('/:id', (req, res) => {
 
 router.delete('/:id', (req, res) => {
     let userId = req.session.userId;
-    let id = req.params.id;
-    User.findByIdAndUpdate({ _id: userId },
-        { $pull: { articles: { _id: id } } }, { safe: true, multi:true },
-        (err, result) => {
-            if (result){
-                console.log(result);
-                Article.findByIdAndDelete({ _id : id }, (err, model) => {
-                    if (model){
-                        console.log(model);
-                        res.redirect(`/all-articles/${userId}`);
-                    } else{
-                        res.send(err);
-                    }                
-                });
-            } else{
-                res.send(err);
-            }
+    let articleId = req.params.id;
+    User.findByIdAndUpdate(userId, {$pull: {articles: articleId}}, (err, result) => {
+        if (result) {
+            Article.findByIdAndDelete(articleId, (err, model) => {
+                if (model) {
+                    res.redirect(`/all-articles/${userId}`);
+                } else {
+                    res.send(err);
+                }
+            });
+        } else {
+            res.send(err);
         }
-    );
+    });
 });
 
 module.exports = router;

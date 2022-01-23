@@ -41,31 +41,29 @@
 	  <div class="container mt-4">
 		<h1 class="text-center">HOME</h1>
 		<a href="/home/new-article" class="btn btn-success">New article</a>
-		<div class="card-deck">
-			<% users.forEach(user => { %>
-				<% let allArticles = user.articles %>
-				<% let count = allArticles.length %>
-				<% if (count !== 0){ %>
+		<% if (articles.length !== 0){ %>
+			<div class="card-deck">
+				<% articles.forEach(article => { %>
 					<div class="card mt-4">
 						<div class="card-body">
 							<h4 class="card-title">
-								<%= allArticles[count-1].title %>
+								<%= article.title %>
 							</h4>
 							<div class="card-subtitle text-muted mb-2">
-								Created on: <%= allArticles[count-1].createdOn.toLocaleDateString() %>
+								Created on: <%= article.createdOn.toLocaleDateString() %>
 							</div>
 							<div class="card-subtitle text-muted mb-2">
-								Created by: <a href="/profile/<%= user.id %>"><%= user.email %></a>
+								Created by: <a href="/profile/<%= article.createdBy %>"><%= user.email %></a>
 							</div>
 							<div class="card-text mb-2">
-								<%= allArticles[count-1].description %>
+								<%= article.description %>
 							</div>
-							<a href="/show-article/<%= allArticles[count-1].id %>/<%= user.id %>" class="btn btn-primary">Read More</a>
+							<a href="/show-article/<%= article.id %>" class="btn btn-primary">Read More</a>
 						</div>
 					</div>
-				<% } %>
-			<% }) %>
-		</div>
+				<% }) %>
+			</div>
+		<% } %>
 	  </div>
 </body>
 </html>
